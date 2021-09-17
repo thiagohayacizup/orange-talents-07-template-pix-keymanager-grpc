@@ -7,14 +7,38 @@ option objc_class_prefix = "HLW";
 
 package br.com.project;
 
-service KeyManagerService {
-  rpc send (KeyManagerRequest) returns (KeyManagerReply) {}
+service PixKeyManager {
+
+  rpc registerKey ( KeyRequest ) returns ( KeyResponse ) {}
+
 }
 
-message KeyManagerRequest {
-  string name = 1;
+message KeyRequest {
+
+    enum KeyType {
+        UNKNOWN_TYPE = 0;
+        CPF = 1;
+        NUMERO_CELULAR = 2;
+        EMAIL = 3;
+        CHAVE_ALEATORIA = 4;
+    }
+
+    enum AccountType {
+        UNKNOWN_ACCOUNT = 0;
+        CONTA_CORRENTE = 1;
+        CONTA_POUPANCA = 2;
+    }
+
+    string clientId = 1;
+    KeyType keyType = 2;
+    string keyValue = 3;
+    AccountType accountType = 4;
+
 }
 
-message KeyManagerReply {
-  string message = 1;
+message KeyResponse {
+
+    string clientId = 1;
+    string chavePix = 2;
+
 }

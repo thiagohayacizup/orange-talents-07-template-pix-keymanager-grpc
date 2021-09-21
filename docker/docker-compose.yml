@@ -1,0 +1,47 @@
+version: '3.8'
+services:
+  # BANCO DADOS PIX GRPC --------------------------------------------------------
+  database-pix-grpc:
+    image: postgres:alpine
+    profiles:
+      - producao
+      - desenvolvimento
+    environment:
+      POSTGRES_USER: pixgrpc
+      POSTGRES_PASSWORD: pixgrpc
+      POSTGRES_DB: pixgrpc
+      POSTGRES_HOST: pixgrpc
+    ports:
+      - 5432:5432
+    volumes:
+      - postgres-pix-grpc-volume:/var/lib/postgresql/data
+    networks:
+      - pix-grpc-network
+# APLICAÇÃO DO BANCO CENTRAL
+  bcb:
+    image: "public.ecr.aws/d8b2x5c9/orange-stack-sat-bcb-pix"
+    profiles:
+      - producao
+      - desenvolvimento
+    ports:
+      - 8082:8082
+    networks:
+      - pix-grpc-network
+# APLICAÇÃO ITAU
+  erp-itau:
+    image: "public.ecr.aws/d8b2x5c9/orange-stack-sat-itau-erp"
+    profiles:
+      - producao
+      - desenvolvimento
+    ports:
+      - 9091:9091
+    networks:
+      - pix-grpc-network
+
+volumes:
+  postgres-pix-grpc-volume:
+    name: postgres-pix-grpc-volume
+
+networks:
+  pix-grpc-network:
+    driver: bridge

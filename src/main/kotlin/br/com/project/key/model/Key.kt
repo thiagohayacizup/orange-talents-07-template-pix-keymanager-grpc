@@ -1,4 +1,4 @@
-package br.com.project.key
+package br.com.project.key.model
 
 import br.com.project.account.Account
 import java.util.*
@@ -9,9 +9,15 @@ import javax.validation.constraints.NotNull
 class Key private constructor(builder: Builder){
 
     companion object{
+
         fun builder() : Builder {
             return Builder()
         }
+
+        fun alreadyExistKey( key : String, keyRepository: KeyRepository ) : Boolean {
+            return keyRepository.findByKeyValue( key ).isPresent
+        }
+
     }
 
     @field:Id
@@ -29,10 +35,10 @@ class Key private constructor(builder: Builder){
     private val keyType : KeyType
 
     @field:NotNull
-    private val keyValue : String
+    val keyValue : String
 
     @field:NotNull
-    @field:ManyToOne( cascade = arrayOf(CascadeType.MERGE) )
+    @field:ManyToOne( cascade = [CascadeType.MERGE] )
     private val account : Account
 
     init{
@@ -43,7 +49,7 @@ class Key private constructor(builder: Builder){
         account = builder.account
     }
 
-    fun register( keyRepository: KeyRepository ) : Key {
+    fun register( keyRepository: KeyRepository) : Key {
         return keyRepository.save( this )
     }
 
@@ -65,7 +71,7 @@ class Key private constructor(builder: Builder){
             return this
         }
 
-        fun withKeyType( keyType : KeyType ) : Builder {
+        fun withKeyType( keyType : KeyType) : Builder {
             this.keyType = keyType
             return this
         }

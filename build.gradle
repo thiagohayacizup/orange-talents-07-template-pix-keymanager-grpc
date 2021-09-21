@@ -50,6 +50,11 @@ dependencies {
     implementation("io.micronaut.data:micronaut-data-hibernate-jpa")
     implementation("org.postgresql:postgresql:42.2.23")
 
+    testAnnotationProcessor "io.micronaut:micronaut-inject-java"
+    testImplementation "io.micronaut.test:micronaut-test-junit5:1.1.5"
+    testImplementation "org.mockito:mockito-junit-jupiter:2.22.0"
+    testImplementation "org.junit.jupiter:junit-jupiter-engine:5.1.0"
+
 }
 
 

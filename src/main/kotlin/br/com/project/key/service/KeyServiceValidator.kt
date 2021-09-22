@@ -8,7 +8,7 @@ import br.com.project.key.model.KeyRepository
 
 class KeyServiceValidator( private val keyService: KeyService, private val keyRepository: KeyRepository ) : KeyService {
 
-    override fun register( keyDto: KeyTransferObject): KeyResponseData {
+    override fun register( keyDto: KeyTransferObject ): KeyResponseData {
 
         if( keyDto.isKeyValueNotValid() )
             return Errors.invalidKey( keyDto.keyValue )

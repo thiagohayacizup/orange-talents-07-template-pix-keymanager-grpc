@@ -10,7 +10,7 @@ class Errors {
         val bodyNotFoundERPItau = KeyResponseData(
             error = Status
                 .NOT_FOUND
-                .withDescription("Response not found.")
+                .withDescription("Response body not found.")
                 .asRuntimeException()
         )
 

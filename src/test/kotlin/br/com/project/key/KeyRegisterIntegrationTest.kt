@@ -26,7 +26,7 @@ import org.mockito.Mockito
 import java.util.*
 
 @MicronautTest( transactional = false )
-internal class KeyIntegrationTest(
+internal class KeyRegisterIntegrationTest(
     private val keyManagerGrpcClient : PixKeyManagerGrpc.PixKeyManagerBlockingStub
 ) {
 

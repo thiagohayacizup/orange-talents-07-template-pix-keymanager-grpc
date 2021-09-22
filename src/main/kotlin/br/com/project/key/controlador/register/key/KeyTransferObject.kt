@@ -1,4 +1,4 @@
-package br.com.project.key.controlador
+package br.com.project.key.controlador.register.key
 
 import br.com.project.account.Account
 import br.com.project.account.AccountRepository

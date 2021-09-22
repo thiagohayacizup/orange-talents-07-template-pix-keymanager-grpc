@@ -3,9 +3,9 @@ package br.com.project.key.service
 import br.com.project.account.AccountRepository
 import br.com.project.erp.itau.ERPItau
 import br.com.project.key.Errors
-import br.com.project.key.controlador.KeyResponseData
-import br.com.project.key.controlador.KeyTransferObject
+import br.com.project.key.controlador.register.key.KeyTransferObject
 import br.com.project.key.model.KeyRepository
+import br.com.project.key.model.KeyResponseData
 import io.micronaut.http.HttpStatus
 
 class KeyServiceImplementation (
@@ -14,7 +14,7 @@ class KeyServiceImplementation (
     private val itauErp : ERPItau
 ) : KeyService {
 
-    override fun register( keyDto: KeyTransferObject ): KeyResponseData {
+    override fun register( keyDto: KeyTransferObject): KeyResponseData {
 
         val buscarConta = itauErp.buscarConta(keyDto.clientId, keyDto.accountType.toString())
 

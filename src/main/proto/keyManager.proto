@@ -11,6 +11,8 @@ service PixKeyManager {
 
   rpc registerKey ( KeyRequest ) returns ( KeyResponse ) {}
 
+  rpc deleteKey ( KeyDeleteRequest ) returns ( KeyResponse ){}
+
 }
 
 message KeyRequest {
@@ -33,6 +35,13 @@ message KeyRequest {
     KeyType keyType = 2;
     string keyValue = 3;
     AccountType accountType = 4;
+
+}
+
+message KeyDeleteRequest{
+
+    string clientId = 1;
+    string pixKey = 2;
 
 }
 

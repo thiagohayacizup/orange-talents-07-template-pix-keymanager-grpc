@@ -1,6 +1,7 @@
 package br.com.project.key.model
 
 import br.com.project.account.Account
+import io.grpc.Status
 import java.util.*
 import javax.persistence.*
 import javax.validation.constraints.NotNull
@@ -16,6 +17,19 @@ class Key private constructor(builder: Builder){
 
         fun alreadyExistKey( key : String, keyRepository: KeyRepository ) : Boolean {
             return keyRepository.findByKeyValue( key ).isPresent
+        }
+
+        fun delete(cliendId: String, pixKey: String, keyRepository: KeyRepository): KeyResponseData {
+            val key = keyRepository.findByIdAndClientId(UUID.fromString(pixKey), cliendId)
+            if( key.isEmpty )
+                return KeyResponseData(
+                    error = Status
+                        .NOT_FOUND
+                        .withDescription("Pix key { $pixKey } not found.")
+                        .asRuntimeException()
+                )
+            keyRepository.delete( key.get() )
+            return KeyResponseData( key = key.get() )
         }
 
     }

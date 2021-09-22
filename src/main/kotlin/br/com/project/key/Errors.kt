@@ -1,6 +1,6 @@
 package br.com.project.key
 
-import br.com.project.key.controlador.KeyResponseData
+import br.com.project.key.model.KeyResponseData
 import io.grpc.Status
 import io.grpc.StatusRuntimeException
 

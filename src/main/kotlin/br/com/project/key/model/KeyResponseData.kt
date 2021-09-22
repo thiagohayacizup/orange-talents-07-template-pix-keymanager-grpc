@@ -1,6 +1,5 @@
-package br.com.project.key.controlador
+package br.com.project.key.model
 
-import br.com.project.key.model.Key
 import io.grpc.StatusRuntimeException
 
 data class KeyResponseData(

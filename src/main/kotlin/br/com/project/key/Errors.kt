@@ -14,22 +14,12 @@ class Errors {
                 .asRuntimeException()
         )
 
-        fun errorResponseERPItau(code: Int) : KeyResponseData {
-            return when( code ) {
-                404 -> KeyResponseData(
-                    error = Status
-                        .NOT_FOUND
-                        .withDescription("Resource not found.")
-                        .asRuntimeException()
-                )
-                else -> KeyResponseData(
-                    error = Status
-                        .INTERNAL
-                        .withDescription("Server internal error.")
-                        .asRuntimeException()
-                )
-            }
-        }
+        val errorResponseERPItau = KeyResponseData(
+            error = Status
+                .NOT_FOUND
+                .withDescription("Resource not found.")
+                .asRuntimeException()
+        )
 
         fun errorConstraintViolation(message: String) : StatusRuntimeException = Status.INVALID_ARGUMENT
             .withDescription(message)

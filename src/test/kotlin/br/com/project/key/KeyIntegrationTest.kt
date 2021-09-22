@@ -1,8 +1,13 @@
 package br.com.project.key
 
 import br.com.project.KeyRequest
+import br.com.project.KeyResponse
 import br.com.project.PixKeyManagerGrpc
+import br.com.project.account.AccountType
+import br.com.project.erp.itau.AccountInfo
 import br.com.project.erp.itau.ERPItau
+import br.com.project.erp.itau.HolderResponse
+import br.com.project.erp.itau.InstitutionResponse
 import io.grpc.ManagedChannel
 import io.grpc.Status
 import io.grpc.StatusRuntimeException
@@ -18,6 +23,7 @@ import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.mockito.Mockito
+import java.util.*
 
 @MicronautTest( transactional = false )
 internal class KeyIntegrationTest(
@@ -26,20 +32,147 @@ internal class KeyIntegrationTest(
 
     @Inject lateinit var erpItau: ERPItau
 
-    @Test
-    fun `key registered with success - cpf`(){}
+    companion object{
+        val UUID_REGEX = "^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}\$".toRegex()
+    }
 
     @Test
-    fun `key registered with success - cell number`(){}
+    fun `key registered with success - cpf`(){
+        val clientUUID = UUID.randomUUID().toString()
+        Mockito
+            .`when`( erpItau.buscarConta(Mockito.contains(clientUUID), Mockito.contains(AccountType.CONTA_CORRENTE.toString()) ) )
+            .thenReturn( HttpResponse.ok(
+                AccountInfo(
+                    instituicao = InstitutionResponse( "ITAU" ),
+                    agencia = "00001",
+                    numero = "123564324",
+                    titular = HolderResponse( "João" )
+                )
+            ))
+        val response = keyManagerGrpcClient.registerKey(
+            KeyRequest
+                .newBuilder()
+                .setClientId(clientUUID)
+                .setKeyType(KeyRequest.KeyType.CPF)
+                .setKeyValue("58142114070")
+                .setAccountType(KeyRequest.AccountType.CONTA_CORRENTE)
+                .build()
+        )
+        Assertions.assertEquals(response.clientId, clientUUID)
+        Assertions.assertTrue(  UUID_REGEX.matches( response.pixKey ) )
+    }
 
     @Test
-    fun `key registered with success - email`(){}
+    fun `key registered with success - cell number`(){
+        val clientUUID = UUID.randomUUID().toString()
+        Mockito
+            .`when`( erpItau.buscarConta(Mockito.contains(clientUUID), Mockito.contains(AccountType.CONTA_POUPANCA.toString()) ) )
+            .thenReturn( HttpResponse.ok(
+                AccountInfo(
+                    instituicao = InstitutionResponse( "ITAU" ),
+                    agencia = "00001",
+                    numero = "9878987",
+                    titular = HolderResponse( "Maria" )
+                )
+            ))
+        val response = keyManagerGrpcClient.registerKey(
+            KeyRequest
+                .newBuilder()
+                .setClientId(clientUUID)
+                .setKeyType(KeyRequest.KeyType.NUMERO_CELULAR)
+                .setKeyValue("+5511222222222")
+                .setAccountType(KeyRequest.AccountType.CONTA_POUPANCA)
+                .build()
+        )
+        Assertions.assertEquals(response.clientId, clientUUID)
+        Assertions.assertTrue(  UUID_REGEX.matches( response.pixKey ) )
+    }
 
     @Test
-    fun `key registered with success - random key`(){}
+    fun `key registered with success - email`(){
+        val clientUUID = UUID.randomUUID().toString()
+        Mockito
+            .`when`( erpItau.buscarConta(Mockito.contains(clientUUID), Mockito.contains(AccountType.CONTA_CORRENTE.toString()) ) )
+            .thenReturn( HttpResponse.ok(
+                AccountInfo(
+                    instituicao = InstitutionResponse( "ITAU" ),
+                    agencia = "00001",
+                    numero = "998763432",
+                    titular = HolderResponse( "Ana" )
+                )
+            ))
+        val response = keyManagerGrpcClient.registerKey(
+            KeyRequest
+                .newBuilder()
+                .setClientId(clientUUID)
+                .setKeyType(KeyRequest.KeyType.EMAIL)
+                .setKeyValue("ana@email.com")
+                .setAccountType(KeyRequest.AccountType.CONTA_CORRENTE)
+                .build()
+        )
+        Assertions.assertEquals(response.clientId, clientUUID)
+        Assertions.assertTrue(  UUID_REGEX.matches( response.pixKey ) )
+    }
 
     @Test
-    fun `key already registered`(){}
+    fun `key registered with success - random key`(){
+        val clientUUID = UUID.randomUUID().toString()
+        Mockito
+            .`when`( erpItau.buscarConta(Mockito.contains(clientUUID), Mockito.contains(AccountType.CONTA_CORRENTE.toString()) ) )
+            .thenReturn( HttpResponse.ok(
+                AccountInfo(
+                    instituicao = InstitutionResponse( "ITAU" ),
+                    agencia = "00001",
+                    numero = "999112132",
+                    titular = HolderResponse( "Lucas" )
+                )
+            ))
+        val response = keyManagerGrpcClient.registerKey(
+            KeyRequest
+                .newBuilder()
+                .setClientId(clientUUID)
+                .setKeyType(KeyRequest.KeyType.CHAVE_ALEATORIA)
+                .setKeyValue("")
+                .setAccountType(KeyRequest.AccountType.CONTA_CORRENTE)
+                .build()
+        )
+        Assertions.assertEquals(response.clientId, clientUUID)
+        Assertions.assertTrue(  UUID_REGEX.matches( response.pixKey ) )
+    }
+
+    @Test
+    fun `key already registered`(){
+        val clientUUID = UUID.randomUUID().toString()
+        Mockito
+            .`when`( erpItau.buscarConta(Mockito.contains(clientUUID), Mockito.contains(AccountType.CONTA_CORRENTE.toString()) ) )
+            .thenReturn( HttpResponse.ok(
+                AccountInfo(
+                    instituicao = InstitutionResponse( "ITAU" ),
+                    agencia = "00001",
+                    numero = "998763432",
+                    titular = HolderResponse( "Marcos" )
+                )
+            ))
+
+        val registerFunction : () -> KeyResponse = {
+            keyManagerGrpcClient.registerKey(
+                KeyRequest
+                    .newBuilder()
+                    .setClientId(clientUUID)
+                    .setKeyType(KeyRequest.KeyType.EMAIL)
+                    .setKeyValue("marcos@email.com")
+                    .setAccountType(KeyRequest.AccountType.CONTA_CORRENTE)
+                    .build()
+            )
+        }
+
+        registerFunction()
+
+        val thrown = assertThrows<StatusRuntimeException>{ registerFunction() }
+
+        Assertions.assertEquals(thrown.status.code.value(), Status.ALREADY_EXISTS.code.value())
+        Assertions.assertEquals(thrown.message, "ALREADY_EXISTS: Key { marcos@email.com } already exists.")
+    }
 
     @Test
     fun `invalid client id`(){

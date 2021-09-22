@@ -34,7 +34,7 @@ class KeyManagerServer(
                     responseObserver?.onNext(
                         KeyResponse
                             .newBuilder()
-                            .setChavePix(this.key?.id.toString())
+                            .setPixKey(this.key?.id.toString())
                             .setClientId(this.key?.clientId)
                             .build()
                     )

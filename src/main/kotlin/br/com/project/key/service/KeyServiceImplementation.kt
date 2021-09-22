@@ -19,7 +19,7 @@ class KeyServiceImplementation (
         val buscarConta = itauErp.buscarConta(keyDto.clientId, keyDto.accountType.toString())
 
         if( buscarConta.status != HttpStatus.OK )
-            return Errors.errorResponseERPItau( buscarConta.code() )
+            return Errors.errorResponseERPItau
 
         val body = buscarConta.body() ?: return Errors.bodyNotFoundERPItau
 

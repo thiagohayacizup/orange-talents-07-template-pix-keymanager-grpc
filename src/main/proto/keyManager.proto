@@ -39,6 +39,6 @@ message KeyRequest {
 message KeyResponse {
 
     string clientId = 1;
-    string chavePix = 2;
+    string pixKey = 2;
 
 }

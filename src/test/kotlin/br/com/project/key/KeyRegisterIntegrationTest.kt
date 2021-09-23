@@ -4,6 +4,7 @@ import br.com.project.KeyRequest
 import br.com.project.KeyResponse
 import br.com.project.PixKeyManagerGrpc
 import br.com.project.account.AccountType
+import br.com.project.bcb.pix.*
 import br.com.project.erp.itau.AccountInfo
 import br.com.project.erp.itau.ERPItau
 import br.com.project.erp.itau.HolderResponse
@@ -16,6 +17,7 @@ import io.micronaut.context.annotation.Factory
 import io.micronaut.grpc.annotation.GrpcChannel
 import io.micronaut.grpc.server.GrpcServerChannel
 import io.micronaut.http.HttpResponse
+import io.micronaut.http.HttpStatus
 import io.micronaut.test.annotation.MockBean
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest
 import jakarta.inject.Inject
@@ -23,6 +25,7 @@ import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.mockito.Mockito
+import java.net.URI
 import java.util.*
 
 @MicronautTest( transactional = false )
@@ -32,29 +35,46 @@ internal class KeyRegisterIntegrationTest(
 
     @Inject lateinit var erpItau: ERPItau
 
+    @Inject lateinit var bcbPix : BCBPix
+
     companion object{
         val UUID_REGEX = "^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}\$".toRegex()
+        val ISPB = "60701190"
+        val AGENCY = "00001"
+        val CPF = "47457722033"
     }
 
     @Test
     fun `key registered with success - cpf`(){
         val clientUUID = UUID.randomUUID().toString()
+        val key = "58142114070"
+        val accountNumber = "123564324"
+        val name = "Joao"
         Mockito
             .`when`( erpItau.findAccount(Mockito.contains(clientUUID), Mockito.contains(AccountType.CONTA_CORRENTE.toString()) ) )
             .thenReturn( HttpResponse.ok(
                 AccountInfo(
-                    instituicao = InstitutionResponse( "ITAU", "60701190"),
-                    agencia = "00001",
-                    numero = "123564324",
-                    titular = HolderResponse( "João", "47457722033" )
+                    instituicao = InstitutionResponse( "ITAU", ISPB),
+                    agencia = AGENCY,
+                    numero = accountNumber,
+                    titular = HolderResponse( name, CPF )
                 )
             ))
+        Mockito
+            .`when`( bcbPix.createKey( CreatePixKeyRequest(
+                KeyTypeBCB.CPF,
+                key,
+                BankAccount(ISPB, AGENCY, accountNumber, AccountTypeBCB.CACC),
+                OwnerBCB(OwnerType.NATURAL_PERSON, name, CPF)
+            ) ) )
+            .thenReturn( HttpResponse.created(CreatePixKeyResponse(key)) )
+
         val response = keyManagerGrpcClient.registerKey(
             KeyRequest
                 .newBuilder()
                 .setClientId(clientUUID)
                 .setKeyType(KeyRequest.KeyType.CPF)
-                .setKeyValue("58142114070")
+                .setKeyValue(key)
                 .setAccountType(KeyRequest.AccountType.CONTA_CORRENTE)
                 .build()
         )
@@ -65,22 +85,35 @@ internal class KeyRegisterIntegrationTest(
     @Test
     fun `key registered with success - cell number`(){
         val clientUUID = UUID.randomUUID().toString()
+        val key = "+5511222222222"
+        val accountNumber = "9878987"
+        val name = "Maria"
         Mockito
             .`when`( erpItau.findAccount(Mockito.contains(clientUUID), Mockito.contains(AccountType.CONTA_POUPANCA.toString()) ) )
             .thenReturn( HttpResponse.ok(
                 AccountInfo(
-                    instituicao = InstitutionResponse( "ITAU", "60701190" ),
-                    agencia = "00001",
-                    numero = "9878987",
-                    titular = HolderResponse( "Maria", "47457722033" )
+                    instituicao = InstitutionResponse( "ITAU", ISPB ),
+                    agencia = AGENCY,
+                    numero = accountNumber,
+                    titular = HolderResponse( name, CPF )
                 )
             ))
+
+        Mockito
+            .`when`( bcbPix.createKey( CreatePixKeyRequest(
+                KeyTypeBCB.PHONE,
+                key,
+                BankAccount(ISPB, AGENCY, accountNumber, AccountTypeBCB.SVGS),
+                OwnerBCB(OwnerType.NATURAL_PERSON, name, CPF)
+            ) ) )
+            .thenReturn( HttpResponse.created(CreatePixKeyResponse(key)) )
+
         val response = keyManagerGrpcClient.registerKey(
             KeyRequest
                 .newBuilder()
                 .setClientId(clientUUID)
                 .setKeyType(KeyRequest.KeyType.NUMERO_CELULAR)
-                .setKeyValue("+5511222222222")
+                .setKeyValue(key)
                 .setAccountType(KeyRequest.AccountType.CONTA_POUPANCA)
                 .build()
         )
@@ -91,22 +124,35 @@ internal class KeyRegisterIntegrationTest(
     @Test
     fun `key registered with success - email`(){
         val clientUUID = UUID.randomUUID().toString()
+        val key = "ana@email.com"
+        val accountNumber = "998763432"
+        val name = "Ana"
         Mockito
             .`when`( erpItau.findAccount(Mockito.contains(clientUUID), Mockito.contains(AccountType.CONTA_CORRENTE.toString()) ) )
             .thenReturn( HttpResponse.ok(
                 AccountInfo(
-                    instituicao = InstitutionResponse( "ITAU", "60701190" ),
-                    agencia = "00001",
-                    numero = "998763432",
-                    titular = HolderResponse( "Ana", "47457722033" )
+                    instituicao = InstitutionResponse( "ITAU", ISPB ),
+                    agencia = AGENCY,
+                    numero = accountNumber,
+                    titular = HolderResponse( name, CPF )
                 )
             ))
+
+        Mockito
+            .`when`( bcbPix.createKey( CreatePixKeyRequest(
+                KeyTypeBCB.EMAIL,
+                key,
+                BankAccount(ISPB, AGENCY, accountNumber, AccountTypeBCB.CACC),
+                OwnerBCB(OwnerType.NATURAL_PERSON, name, CPF)
+            ) ) )
+            .thenReturn( HttpResponse.created(CreatePixKeyResponse(key)) )
+
         val response = keyManagerGrpcClient.registerKey(
             KeyRequest
                 .newBuilder()
                 .setClientId(clientUUID)
                 .setKeyType(KeyRequest.KeyType.EMAIL)
-                .setKeyValue("ana@email.com")
+                .setKeyValue(key)
                 .setAccountType(KeyRequest.AccountType.CONTA_CORRENTE)
                 .build()
         )
@@ -117,22 +163,35 @@ internal class KeyRegisterIntegrationTest(
     @Test
     fun `key registered with success - random key`(){
         val clientUUID = UUID.randomUUID().toString()
+        val key = ""
+        val accountNumber = "999112132"
+        val name = "Lucas"
         Mockito
             .`when`( erpItau.findAccount(Mockito.contains(clientUUID), Mockito.contains(AccountType.CONTA_CORRENTE.toString()) ) )
             .thenReturn( HttpResponse.ok(
                 AccountInfo(
-                    instituicao = InstitutionResponse( "ITAU", "60701190" ),
-                    agencia = "00001",
-                    numero = "999112132",
-                    titular = HolderResponse( "Lucas", "47457722033" )
+                    instituicao = InstitutionResponse( "ITAU", ISPB ),
+                    agencia = AGENCY,
+                    numero = accountNumber,
+                    titular = HolderResponse( name, CPF )
                 )
             ))
+
+        Mockito
+            .`when`( bcbPix.createKey( CreatePixKeyRequest(
+                KeyTypeBCB.RANDOM,
+                key,
+                BankAccount(ISPB, AGENCY, accountNumber, AccountTypeBCB.CACC),
+                OwnerBCB(OwnerType.NATURAL_PERSON, name, CPF)
+            ) ) )
+            .thenReturn( HttpResponse.created(CreatePixKeyResponse(UUID.randomUUID().toString())) )
+
         val response = keyManagerGrpcClient.registerKey(
             KeyRequest
                 .newBuilder()
                 .setClientId(clientUUID)
                 .setKeyType(KeyRequest.KeyType.CHAVE_ALEATORIA)
-                .setKeyValue("")
+                .setKeyValue(key)
                 .setAccountType(KeyRequest.AccountType.CONTA_CORRENTE)
                 .build()
         )
@@ -143,16 +202,28 @@ internal class KeyRegisterIntegrationTest(
     @Test
     fun `key already registered`(){
         val clientUUID = UUID.randomUUID().toString()
+        val key = "marcos@email.com"
+        val accountNumber = "999112132"
+        val name = "Marcos"
         Mockito
             .`when`( erpItau.findAccount(Mockito.contains(clientUUID), Mockito.contains(AccountType.CONTA_CORRENTE.toString()) ) )
             .thenReturn( HttpResponse.ok(
                 AccountInfo(
-                    instituicao = InstitutionResponse( "ITAU", "60701190" ),
-                    agencia = "00001",
-                    numero = "998763432",
-                    titular = HolderResponse( "Marcos", "47457722033" )
+                    instituicao = InstitutionResponse( "ITAU", ISPB ),
+                    agencia = AGENCY,
+                    numero = accountNumber,
+                    titular = HolderResponse( name, CPF )
                 )
             ))
+
+        Mockito
+            .`when`( bcbPix.createKey( CreatePixKeyRequest(
+                KeyTypeBCB.EMAIL,
+                key,
+                BankAccount(ISPB, AGENCY, accountNumber, AccountTypeBCB.CACC),
+                OwnerBCB(OwnerType.NATURAL_PERSON, name, CPF)
+            ) ) )
+            .thenReturn( HttpResponse.created(CreatePixKeyResponse(key)) )
 
         val registerFunction : () -> KeyResponse = {
             keyManagerGrpcClient.registerKey(
@@ -160,7 +231,7 @@ internal class KeyRegisterIntegrationTest(
                     .newBuilder()
                     .setClientId(clientUUID)
                     .setKeyType(KeyRequest.KeyType.EMAIL)
-                    .setKeyValue("marcos@email.com")
+                    .setKeyValue(key)
                     .setAccountType(KeyRequest.AccountType.CONTA_CORRENTE)
                     .build()
             )
@@ -334,6 +405,78 @@ internal class KeyRegisterIntegrationTest(
     }
 
     @Test
+    fun `body response bcb not found`(){
+        val key = ""
+        val accountNumber = "1231"
+        val name = "Sarah"
+        Mockito
+            .`when`( erpItau.findAccount(Mockito.contains("c56dfef4-7901-44fb-84e2-a2cefb157822"), Mockito.anyString()) )
+            .thenReturn( HttpResponse.ok( AccountInfo(
+                instituicao = InstitutionResponse( "ITAU", ISPB ),
+                agencia = AGENCY,
+                numero = accountNumber,
+                titular = HolderResponse( name, CPF )
+            ) ) )
+        Mockito
+            .`when`( bcbPix.createKey( CreatePixKeyRequest(
+                KeyTypeBCB.RANDOM, key,
+                BankAccount(ISPB, AGENCY, accountNumber, AccountTypeBCB.CACC),
+                OwnerBCB(OwnerType.NATURAL_PERSON, name, CPF)
+            ) ) )
+            .thenReturn( HttpResponse.created( null, URI.create("") ) )
+
+        val thrown = assertThrows<StatusRuntimeException> {
+            keyManagerGrpcClient.registerKey(
+                KeyRequest
+                    .newBuilder()
+                    .setClientId("c56dfef4-7901-44fb-84e2-a2cefb157822")
+                    .setKeyType(KeyRequest.KeyType.CHAVE_ALEATORIA)
+                    .setKeyValue(key)
+                    .setAccountType(KeyRequest.AccountType.CONTA_CORRENTE)
+                    .build()
+            )
+        }
+        Assertions.assertEquals(thrown.status.code.value(), Status.NOT_FOUND.code.value())
+        Assertions.assertEquals(thrown.message, "NOT_FOUND: Response body bcb not found.")
+    }
+
+    @Test
+    fun `error bcb response`(){
+        val key = ""
+        val accountNumber = "1231"
+        val name = "Sarah"
+        Mockito
+            .`when`( erpItau.findAccount(Mockito.contains("c56dfef4-7901-44fb-84e2-a2cefb157822"), Mockito.anyString()) )
+            .thenReturn( HttpResponse.ok( AccountInfo(
+                instituicao = InstitutionResponse( "ITAU", ISPB ),
+                agencia = AGENCY,
+                numero = accountNumber,
+                titular = HolderResponse( name, CPF )
+            ) ) )
+        Mockito
+            .`when`( bcbPix.createKey( CreatePixKeyRequest(
+                KeyTypeBCB.RANDOM, key,
+                BankAccount(ISPB, AGENCY, accountNumber, AccountTypeBCB.CACC),
+                OwnerBCB(OwnerType.NATURAL_PERSON, name, CPF)
+            ) ) )
+            .thenReturn( HttpResponse.status( HttpStatus.FORBIDDEN ) )
+
+        val thrown = assertThrows<StatusRuntimeException> {
+            keyManagerGrpcClient.registerKey(
+                KeyRequest
+                    .newBuilder()
+                    .setClientId("c56dfef4-7901-44fb-84e2-a2cefb157822")
+                    .setKeyType(KeyRequest.KeyType.CHAVE_ALEATORIA)
+                    .setKeyValue(key)
+                    .setAccountType(KeyRequest.AccountType.CONTA_CORRENTE)
+                    .build()
+            )
+        }
+        Assertions.assertEquals(thrown.status.code.value(), Status.INTERNAL.code.value())
+        Assertions.assertEquals(thrown.message, "INTERNAL: Error registering key in BCB")
+    }
+
+    @Test
     fun `error response erp itau 404`(){
         Mockito
             .`when`( erpItau.findAccount(Mockito.contains("c56dfef4-7901-44fb-84e2-a2cefb157811"), Mockito.anyString()) )
@@ -356,6 +499,11 @@ internal class KeyRegisterIntegrationTest(
     @MockBean(ERPItau::class)
     fun erpItau() : ERPItau? {
         return Mockito.mock(ERPItau::class.java)
+    }
+
+    @MockBean(BCBPix::class)
+    fun bcbPix() : BCBPix? {
+        return Mockito.mock(BCBPix::class.java)
     }
 
     @Factory

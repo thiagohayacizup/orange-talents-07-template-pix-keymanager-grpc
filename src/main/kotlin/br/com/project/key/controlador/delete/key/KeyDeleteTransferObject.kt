@@ -1,7 +1,6 @@
 package br.com.project.key.controlador.delete.key
 
 import br.com.project.bcb.pix.BCBPix
-import br.com.project.bcb.pix.KeyTypeBCB
 import br.com.project.key.model.Key
 import br.com.project.key.model.KeyRepository
 import br.com.project.key.model.KeyResponseData

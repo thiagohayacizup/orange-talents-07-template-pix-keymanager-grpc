@@ -17,6 +17,7 @@ import io.grpc.stub.StreamObserver
 import io.micronaut.validation.Validated
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
+import java.sql.Driver
 import javax.validation.ConstraintViolationException
 import javax.validation.Valid
 
@@ -59,13 +60,14 @@ class KeyManagerServer(
     }
 
     fun register( @Valid keyDto : KeyTransferObject ) : KeyResponseData {
-        return KeyService.Companion.Builder()
-            .withKeyRepository( keyRepository )
-            .withAccountRepository( accountRepository )
-            .withERPItau( itauErp )
-            .withBCBPix( bcbPix )
-            .build()
-            .register( keyDto )
+        return KeyService.create(
+            Drivers.builder()
+                .withKeyRepository( keyRepository )
+                .withAccountRepository( accountRepository )
+                .withERPItau( itauErp )
+                .withBCBPix( bcbPix )
+                .build()
+        ).register( keyDto )
     }
 
     override fun deleteKey(request: KeyDeleteRequest?, responseObserver: StreamObserver<KeyResponse>?) {

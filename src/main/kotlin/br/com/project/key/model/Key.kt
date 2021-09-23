@@ -1,7 +1,10 @@
 package br.com.project.key.model
 
 import br.com.project.account.Account
+import br.com.project.bcb.pix.BCBPix
+import br.com.project.bcb.pix.DeletePixKeyRequest
 import io.grpc.Status
+import io.micronaut.http.HttpStatus
 import java.util.*
 import javax.persistence.*
 import javax.validation.constraints.NotNull
@@ -19,13 +22,24 @@ class Key private constructor(builder: Builder){
             return keyRepository.findByKeyValue( key ).isPresent
         }
 
-        fun delete(cliendId: String, pixKey: String, keyRepository: KeyRepository): KeyResponseData {
-            val key = keyRepository.findByIdAndClientId(UUID.fromString(pixKey), cliendId)
+        fun findByIdAndClientId( clientId: String, pixKey: String, keyRepository: KeyRepository ) : Optional<Key>{
+            return keyRepository.findByIdAndClientId(UUID.fromString(pixKey), clientId)
+        }
+
+        fun delete( key: Optional<Key>, keyRepository: KeyRepository, bcbPix: BCBPix ): KeyResponseData {
             if( key.isEmpty )
                 return KeyResponseData(
                     error = Status
                         .NOT_FOUND
-                        .withDescription("Pix key { $pixKey } not found.")
+                        .withDescription("Pix key not found.")
+                        .asRuntimeException()
+                )
+            val deleteKey = bcbPix.deleteKey(key.get().keyValue, DeletePixKeyRequest(key.get().keyValue, key.get().account.ispb))
+            if( deleteKey.status != HttpStatus.OK )
+                return KeyResponseData(
+                    error = Status
+                        .INTERNAL
+                        .withDescription("Key delete operation error in BCB - key not deleted")
                         .asRuntimeException()
                 )
             keyRepository.delete( key.get() )

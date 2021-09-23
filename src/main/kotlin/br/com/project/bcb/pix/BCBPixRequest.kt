@@ -24,4 +24,9 @@ enum class KeyTypeBCB { CPF, PHONE, EMAIL, RANDOM }
 
 enum class AccountTypeBCB{ CACC, SVGS }
 
-enum class OwnerType{ NATURAL_PERSON, LEGAL_PERSON }
+enum class OwnerType{ NATURAL_PERSON }
+
+data class DeletePixKeyRequest(
+    val key : String,
+    val participant: String
+)

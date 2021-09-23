@@ -26,6 +26,9 @@ class Account private constructor(builder: Builder) {
     private val accountNumber : String
 
     @field:NotNull
+    val ispb : String
+
+    @field:NotNull
     @field:Enumerated( EnumType.STRING )
     private val accountType: AccountType
 
@@ -34,6 +37,7 @@ class Account private constructor(builder: Builder) {
         agency = builder.agency
         accountNumber = builder.accountNumber
         accountType = builder.accountType
+        ispb = builder.ispb
     }
 
     fun save( accountRepository: AccountRepository ) : Account {
@@ -48,6 +52,12 @@ class Account private constructor(builder: Builder) {
         lateinit var agency : String
         lateinit var accountNumber: String
         lateinit var accountType: AccountType
+        lateinit var ispb : String
+
+        fun withIspb( ispb : String ) : Builder {
+            this.ispb = ispb
+            return this
+        }
 
         fun withBankName( bankName : String ) : Builder {
             this.bankName = bankName

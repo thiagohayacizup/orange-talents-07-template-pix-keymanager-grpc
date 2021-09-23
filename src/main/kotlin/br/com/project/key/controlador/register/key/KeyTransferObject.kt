@@ -46,6 +46,7 @@ data class KeyTransferObject(
                     .withAccountNumber(accountInfo.numero )
                     .withAccountType( accountType!! )
                     .withBankName( accountInfo.instituicao.nome )
+                    .withIspb(accountInfo.instituicao.ispb)
                     .build()
                     .save( accountRepository )
             ).build()

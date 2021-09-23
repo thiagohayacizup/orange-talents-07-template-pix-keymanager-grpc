@@ -1,5 +1,9 @@
 package br.com.project.bcb.pix
 
-class CreatePixKeyResponse(
+data class CreatePixKeyResponse(
+    val key : String
+)
+
+data class DeletePixKeyResponse(
     val key : String
 )

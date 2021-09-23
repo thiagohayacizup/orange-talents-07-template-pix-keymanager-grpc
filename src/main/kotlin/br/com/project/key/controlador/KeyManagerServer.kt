@@ -97,7 +97,7 @@ class KeyManagerServer(
     }
 
     fun delete( @Valid keyDeleteDto : KeyDeleteTransferObject ) : KeyResponseData {
-        return keyDeleteDto.delete( keyRepository )
+        return keyDeleteDto.delete( keyRepository, bcbPix )
     }
 
 }

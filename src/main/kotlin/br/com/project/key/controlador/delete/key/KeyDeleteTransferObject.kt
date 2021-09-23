@@ -1,5 +1,7 @@
 package br.com.project.key.controlador.delete.key
 
+import br.com.project.bcb.pix.BCBPix
+import br.com.project.bcb.pix.KeyTypeBCB
 import br.com.project.key.model.Key
 import br.com.project.key.model.KeyRepository
 import br.com.project.key.model.KeyResponseData
@@ -20,8 +22,12 @@ data class KeyDeleteTransferObject(
 
 ){
 
-    fun delete( keyRepository: KeyRepository ) : KeyResponseData {
-        return Key.delete( cliendId, pixKey, keyRepository )
+    fun delete( keyRepository: KeyRepository, bcbPix: BCBPix ) : KeyResponseData {
+        return Key.delete(
+            Key.findByIdAndClientId(cliendId, pixKey, keyRepository),
+            keyRepository,
+            bcbPix
+        )
     }
 
 }

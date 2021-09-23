@@ -32,4 +32,4 @@ itau:
 
 bcb:
   pix:
-    url: ${URL_BCB_PIX:'http://localhost:8082'}
+    url: 'http://localhost:8082'

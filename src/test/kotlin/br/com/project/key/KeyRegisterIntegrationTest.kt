@@ -40,13 +40,13 @@ internal class KeyRegisterIntegrationTest(
     fun `key registered with success - cpf`(){
         val clientUUID = UUID.randomUUID().toString()
         Mockito
-            .`when`( erpItau.buscarConta(Mockito.contains(clientUUID), Mockito.contains(AccountType.CONTA_CORRENTE.toString()) ) )
+            .`when`( erpItau.findAccount(Mockito.contains(clientUUID), Mockito.contains(AccountType.CONTA_CORRENTE.toString()) ) )
             .thenReturn( HttpResponse.ok(
                 AccountInfo(
-                    instituicao = InstitutionResponse( "ITAU" ),
+                    instituicao = InstitutionResponse( "ITAU", "60701190"),
                     agencia = "00001",
                     numero = "123564324",
-                    titular = HolderResponse( "João" )
+                    titular = HolderResponse( "João", "47457722033" )
                 )
             ))
         val response = keyManagerGrpcClient.registerKey(
@@ -66,13 +66,13 @@ internal class KeyRegisterIntegrationTest(
     fun `key registered with success - cell number`(){
         val clientUUID = UUID.randomUUID().toString()
         Mockito
-            .`when`( erpItau.buscarConta(Mockito.contains(clientUUID), Mockito.contains(AccountType.CONTA_POUPANCA.toString()) ) )
+            .`when`( erpItau.findAccount(Mockito.contains(clientUUID), Mockito.contains(AccountType.CONTA_POUPANCA.toString()) ) )
             .thenReturn( HttpResponse.ok(
                 AccountInfo(
-                    instituicao = InstitutionResponse( "ITAU" ),
+                    instituicao = InstitutionResponse( "ITAU", "60701190" ),
                     agencia = "00001",
                     numero = "9878987",
-                    titular = HolderResponse( "Maria" )
+                    titular = HolderResponse( "Maria", "47457722033" )
                 )
             ))
         val response = keyManagerGrpcClient.registerKey(
@@ -92,13 +92,13 @@ internal class KeyRegisterIntegrationTest(
     fun `key registered with success - email`(){
         val clientUUID = UUID.randomUUID().toString()
         Mockito
-            .`when`( erpItau.buscarConta(Mockito.contains(clientUUID), Mockito.contains(AccountType.CONTA_CORRENTE.toString()) ) )
+            .`when`( erpItau.findAccount(Mockito.contains(clientUUID), Mockito.contains(AccountType.CONTA_CORRENTE.toString()) ) )
             .thenReturn( HttpResponse.ok(
                 AccountInfo(
-                    instituicao = InstitutionResponse( "ITAU" ),
+                    instituicao = InstitutionResponse( "ITAU", "60701190" ),
                     agencia = "00001",
                     numero = "998763432",
-                    titular = HolderResponse( "Ana" )
+                    titular = HolderResponse( "Ana", "47457722033" )
                 )
             ))
         val response = keyManagerGrpcClient.registerKey(
@@ -118,13 +118,13 @@ internal class KeyRegisterIntegrationTest(
     fun `key registered with success - random key`(){
         val clientUUID = UUID.randomUUID().toString()
         Mockito
-            .`when`( erpItau.buscarConta(Mockito.contains(clientUUID), Mockito.contains(AccountType.CONTA_CORRENTE.toString()) ) )
+            .`when`( erpItau.findAccount(Mockito.contains(clientUUID), Mockito.contains(AccountType.CONTA_CORRENTE.toString()) ) )
             .thenReturn( HttpResponse.ok(
                 AccountInfo(
-                    instituicao = InstitutionResponse( "ITAU" ),
+                    instituicao = InstitutionResponse( "ITAU", "60701190" ),
                     agencia = "00001",
                     numero = "999112132",
-                    titular = HolderResponse( "Lucas" )
+                    titular = HolderResponse( "Lucas", "47457722033" )
                 )
             ))
         val response = keyManagerGrpcClient.registerKey(
@@ -144,13 +144,13 @@ internal class KeyRegisterIntegrationTest(
     fun `key already registered`(){
         val clientUUID = UUID.randomUUID().toString()
         Mockito
-            .`when`( erpItau.buscarConta(Mockito.contains(clientUUID), Mockito.contains(AccountType.CONTA_CORRENTE.toString()) ) )
+            .`when`( erpItau.findAccount(Mockito.contains(clientUUID), Mockito.contains(AccountType.CONTA_CORRENTE.toString()) ) )
             .thenReturn( HttpResponse.ok(
                 AccountInfo(
-                    instituicao = InstitutionResponse( "ITAU" ),
+                    instituicao = InstitutionResponse( "ITAU", "60701190" ),
                     agencia = "00001",
                     numero = "998763432",
-                    titular = HolderResponse( "Marcos" )
+                    titular = HolderResponse( "Marcos", "47457722033" )
                 )
             ))
 
@@ -316,7 +316,7 @@ internal class KeyRegisterIntegrationTest(
     @Test
     fun `body response erp itau not found`(){
         Mockito
-            .`when`( erpItau.buscarConta(Mockito.contains("c56dfef4-7901-44fb-84e2-a2cefb157822"), Mockito.anyString()) )
+            .`when`( erpItau.findAccount(Mockito.contains("c56dfef4-7901-44fb-84e2-a2cefb157822"), Mockito.anyString()) )
             .thenReturn( HttpResponse.ok( null ) )
         val thrown = assertThrows<StatusRuntimeException> {
             keyManagerGrpcClient.registerKey(
@@ -330,13 +330,13 @@ internal class KeyRegisterIntegrationTest(
             )
         }
         Assertions.assertEquals(thrown.status.code.value(), Status.NOT_FOUND.code.value())
-        Assertions.assertEquals(thrown.message, "NOT_FOUND: Response body not found.")
+        Assertions.assertEquals(thrown.message, "NOT_FOUND: Response body erp itau not found.")
     }
 
     @Test
     fun `error response erp itau 404`(){
         Mockito
-            .`when`( erpItau.buscarConta(Mockito.contains("c56dfef4-7901-44fb-84e2-a2cefb157811"), Mockito.anyString()) )
+            .`when`( erpItau.findAccount(Mockito.contains("c56dfef4-7901-44fb-84e2-a2cefb157811"), Mockito.anyString()) )
             .thenReturn( HttpResponse.notFound() )
         val thrown = assertThrows<StatusRuntimeException> {
             keyManagerGrpcClient.registerKey(
@@ -350,7 +350,7 @@ internal class KeyRegisterIntegrationTest(
             )
         }
         Assertions.assertEquals(thrown.status.code.value(), Status.NOT_FOUND.code.value())
-        Assertions.assertEquals(thrown.message, "NOT_FOUND: Resource not found.")
+        Assertions.assertEquals(thrown.message, "NOT_FOUND: Resource not found erp itau.")
     }
 
     @MockBean(ERPItau::class)

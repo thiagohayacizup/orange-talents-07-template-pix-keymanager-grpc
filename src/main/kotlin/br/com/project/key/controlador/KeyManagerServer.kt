@@ -5,6 +5,7 @@ import br.com.project.KeyRequest
 import br.com.project.KeyResponse
 import br.com.project.PixKeyManagerGrpc
 import br.com.project.account.AccountRepository
+import br.com.project.bcb.pix.BCBPix
 import br.com.project.erp.itau.ERPItau
 import br.com.project.key.Errors
 import br.com.project.key.controlador.delete.key.KeyDeleteTransferObject
@@ -14,6 +15,7 @@ import br.com.project.key.model.KeyResponseData
 import br.com.project.key.service.KeyService
 import io.grpc.stub.StreamObserver
 import io.micronaut.validation.Validated
+import jakarta.inject.Inject
 import jakarta.inject.Singleton
 import javax.validation.ConstraintViolationException
 import javax.validation.Valid
@@ -22,9 +24,13 @@ import javax.validation.Valid
 @Validated
 class KeyManagerServer(
     private val keyRepository: KeyRepository,
-    private val accountRepository: AccountRepository,
-    private val itauErp : ERPItau
+    private val accountRepository: AccountRepository
 ) : PixKeyManagerGrpc.PixKeyManagerImplBase() {
+
+
+    @Inject private lateinit var itauErp : ERPItau
+
+    @Inject private lateinit var bcbPix : BCBPix
 
     override fun registerKey(request: KeyRequest?, responseObserver: StreamObserver<KeyResponse>?) {
 
@@ -53,7 +59,13 @@ class KeyManagerServer(
     }
 
     fun register( @Valid keyDto : KeyTransferObject ) : KeyResponseData {
-        return KeyService.create(keyRepository, accountRepository, itauErp).register( keyDto )
+        return KeyService.Companion.Builder()
+            .withKeyRepository( keyRepository )
+            .withAccountRepository( accountRepository )
+            .withERPItau( itauErp )
+            .withBCBPix( bcbPix )
+            .build()
+            .register( keyDto )
     }
 
     override fun deleteKey(request: KeyDeleteRequest?, responseObserver: StreamObserver<KeyResponse>?) {

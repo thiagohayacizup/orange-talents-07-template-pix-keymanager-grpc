@@ -3,6 +3,10 @@ package br.com.project.key.controlador.register.key
 import br.com.project.account.Account
 import br.com.project.account.AccountRepository
 import br.com.project.account.AccountType
+import br.com.project.bcb.pix.BankAccount
+import br.com.project.bcb.pix.CreatePixKeyRequest
+import br.com.project.bcb.pix.OwnerBCB
+import br.com.project.bcb.pix.OwnerType
 import br.com.project.erp.itau.AccountInfo
 import br.com.project.key.model.Key
 import br.com.project.key.model.KeyRepository
@@ -27,12 +31,15 @@ data class KeyTransferObject(
     val accountType: AccountType?
 ){
 
+    companion object {
+        private val builder = Key.builder()
+    }
+
     fun register(keyRepository : KeyRepository, accountRepository: AccountRepository, accountInfo : AccountInfo ) : Key {
-        return Key.builder()
+        return builder
             .withClientId( clientId )
             .withClientName( accountInfo.titular.nome )
             .withKeyType( keyType!! )
-            .withKeyValue( generateKey() )
             .withAccount(
                 Account.builder()
                     .withAgency(accountInfo.agencia )
@@ -45,9 +52,17 @@ data class KeyTransferObject(
             .register( keyRepository )
     }
 
-    private fun generateKey() : String {
-        return if(keyType == KeyType.CHAVE_ALEATORIA) UUID.randomUUID().toString()
-        else keyValue
+    fun toBCBRequest(body: AccountInfo): CreatePixKeyRequest {
+        return CreatePixKeyRequest(
+            keyType!!.toBCBKeyType(),
+            keyValue,
+            BankAccount(body.instituicao.ispb, body.agencia, body.numero, accountType!!.toBCBAccountType()),
+            OwnerBCB(OwnerType.NATURAL_PERSON, body.titular.nome, body.titular.cpf)
+        )
+    }
+
+    fun updateToBCBKey( key : String ){
+        builder.withKeyValue( key )
     }
 
     fun isKeyValueNotValid(): Boolean {

@@ -1,6 +1,7 @@
 package br.com.project.key.model
 
 import br.com.project.KeyRequest
+import br.com.project.bcb.pix.KeyTypeBCB
 import br.com.project.cellphone.CellphoneValidator
 import br.com.project.document.Document
 import br.com.project.email.EmailValidator
@@ -26,6 +27,15 @@ enum class KeyType {
     };
 
     abstract fun valid( keyValue : String ) : Boolean
+
+    fun toBCBKeyType(): KeyTypeBCB {
+        return when( this ){
+            CPF -> KeyTypeBCB.CPF
+            NUMERO_CELULAR -> KeyTypeBCB.PHONE
+            EMAIL -> KeyTypeBCB.EMAIL
+            CHAVE_ALEATORIA -> KeyTypeBCB.RANDOM
+        }
+    }
 
     companion object{
         fun from( keyType : KeyRequest.KeyType ) : KeyType? {

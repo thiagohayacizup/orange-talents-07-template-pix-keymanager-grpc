@@ -31,13 +31,13 @@ internal class KeyDeleteIntegrationTest(
     fun `key deleted with success`(){
         val clientId = UUID.randomUUID().toString()
         Mockito
-            .`when`( erpItau.buscarConta(Mockito.contains(clientId), Mockito.contains(AccountType.CONTA_CORRENTE.toString()) ) )
+            .`when`( erpItau.findAccount(Mockito.contains(clientId), Mockito.contains(AccountType.CONTA_CORRENTE.toString()) ) )
             .thenReturn( HttpResponse.ok(
                 AccountInfo(
-                    instituicao = InstitutionResponse( "ITAU" ),
+                    instituicao = InstitutionResponse( "ITAU", "60701190" ),
                     agencia = "00001",
                     numero = "67355756",
-                    titular = HolderResponse( "Nome" )
+                    titular = HolderResponse( "Nome", "95274473059" )
                 )
             ))
         val response = keyManagerGrpcClient.registerKey(

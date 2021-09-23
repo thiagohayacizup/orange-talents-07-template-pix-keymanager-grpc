@@ -7,17 +7,31 @@ import io.grpc.StatusRuntimeException
 class Errors {
 
     companion object {
+        val bodyBcbNotFound = KeyResponseData(
+            error = Status
+                .NOT_FOUND
+                .withDescription("Response body bcb not found.")
+                .asRuntimeException()
+        )
+
+        val errorBcb = KeyResponseData(
+                error = Status
+                    .INTERNAL
+                    .withDescription("Error registering key in BCB")
+                    .asRuntimeException()
+        )
+
         val bodyNotFoundERPItau = KeyResponseData(
             error = Status
                 .NOT_FOUND
-                .withDescription("Response body not found.")
+                .withDescription("Response body erp itau not found.")
                 .asRuntimeException()
         )
 
         val errorResponseERPItau = KeyResponseData(
             error = Status
                 .NOT_FOUND
-                .withDescription("Resource not found.")
+                .withDescription("Resource not found erp itau.")
                 .asRuntimeException()
         )
 

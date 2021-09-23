@@ -12,18 +12,18 @@ class ERPItauTest {
         val erpItau : ERPItau = Mockito.mock( ERPItau::class.java )
 
         val accountInfo = AccountInfo(
-            instituicao = InstitutionResponse( "BANCO XYZ" ),
+            instituicao = InstitutionResponse( "BANCO XYZ", "60701190" ),
             agencia = "0001",
             numero = "123451",
-            titular = HolderResponse( "Joao" )
+            titular = HolderResponse( "Joao", "76968476002" )
         )
 
         Mockito
-            .`when`( erpItau.buscarConta(Mockito.anyString(), Mockito.anyString()) )
+            .`when`( erpItau.findAccount(Mockito.anyString(), Mockito.anyString()) )
             .thenReturn( HttpResponse.ok(accountInfo) )
 
         val info = erpItau
-            .buscarConta("123456789-53453546-34534-534534-35345345776", "CONTA_CORRENTE")
+            .findAccount("123456789-53453546-34534-534534-35345345776", "CONTA_CORRENTE")
             .body()!!
 
         Assertions.assertEquals(accountInfo.agencia, info.agencia)

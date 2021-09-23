@@ -10,6 +10,6 @@ import io.micronaut.http.client.annotation.Client
 interface ERPItau {
 
     @Get("/api/v1/clientes/{clienteId}/contas/{?tipo}")
-    fun buscarConta( @PathVariable clienteId : String, @QueryValue tipo : String ) : HttpResponse<AccountInfo>
+    fun findAccount( @PathVariable clienteId : String, @QueryValue tipo : String ) : HttpResponse<AccountInfo>
 
 }

@@ -37,13 +37,22 @@ enum class KeyType {
         }
     }
 
+    fun toKeyTypeResponse() : br.com.project.KeyType {
+        return when( this ){
+            CPF -> br.com.project.KeyType.CPF
+            NUMERO_CELULAR -> br.com.project.KeyType.NUMERO_CELULAR
+            EMAIL -> br.com.project.KeyType.EMAIL
+            CHAVE_ALEATORIA -> br.com.project.KeyType.CHAVE_ALEATORIA
+        }
+    }
+
     companion object{
-        fun from( keyType : KeyRequest.KeyType ) : KeyType? {
+        fun from( keyType : br.com.project.KeyType ) : KeyType? {
             return when( keyType ){
-                KeyRequest.KeyType.CPF -> CPF
-                KeyRequest.KeyType.NUMERO_CELULAR -> NUMERO_CELULAR
-                KeyRequest.KeyType.EMAIL -> EMAIL
-                KeyRequest.KeyType.CHAVE_ALEATORIA -> CHAVE_ALEATORIA
+                br.com.project.KeyType.CPF -> CPF
+                br.com.project.KeyType.NUMERO_CELULAR -> NUMERO_CELULAR
+                br.com.project.KeyType.EMAIL -> EMAIL
+                br.com.project.KeyType.CHAVE_ALEATORIA -> CHAVE_ALEATORIA
                 else -> null
             }
         }

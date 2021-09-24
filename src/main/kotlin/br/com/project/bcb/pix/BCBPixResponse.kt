@@ -7,3 +7,11 @@ data class CreatePixKeyResponse(
 data class DeletePixKeyResponse(
     val key : String
 )
+
+data class PixKeyDetailsResponse(
+    val keyType : KeyTypeBCB,
+    val key : String,
+    val bankAccount: BankAccount,
+    val ownerBCB: OwnerBCB,
+    val createdAt : String
+)

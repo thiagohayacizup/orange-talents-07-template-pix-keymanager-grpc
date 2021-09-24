@@ -5,6 +5,8 @@ option java_package = "br.com.project";
 option java_outer_classname = "KeyManager";
 option objc_class_prefix = "HLW";
 
+import "google/protobuf/timestamp.proto";
+
 package br.com.project;
 
 service PixKeyManager {
@@ -15,21 +17,69 @@ service PixKeyManager {
 
 }
 
+service PixKeyLoadManager {
+
+    rpc loadInfo( LoadRequest ) returns ( LoadResponse ) {}
+
+}
+
+enum KeyType {
+    UNKNOWN_TYPE = 0;
+    CPF = 1;
+    NUMERO_CELULAR = 2;
+    EMAIL = 3;
+    CHAVE_ALEATORIA = 4;
+}
+
+enum AccountType {
+    UNKNOWN_ACCOUNT = 0;
+    CONTA_CORRENTE = 1;
+    CONTA_POUPANCA = 2;
+}
+
+message LoadResponse{
+
+    message PixKey{
+
+        message Account{
+
+            AccountType accountType = 1;
+            string institution = 2;
+            string name = 3;
+            string cpf = 4;
+            string agency = 5;
+            string number = 6;
+
+        }
+
+        KeyType keyType = 1;
+        string keyValue = 2;
+        Account account = 3;
+        google.protobuf.Timestamp createdAt = 4;
+
+    }
+
+    string clientId = 1;
+    string pixKeyId = 2;
+    PixKey pixKey = 3;
+
+}
+
+message LoadRequest{
+
+    message PixId{
+        string clientId = 1;
+        string pixKey = 2;
+    }
+
+    oneof filter{
+        PixId pixId = 1;
+        string key = 2;
+    }
+
+}
+
 message KeyRequest {
-
-    enum KeyType {
-        UNKNOWN_TYPE = 0;
-        CPF = 1;
-        NUMERO_CELULAR = 2;
-        EMAIL = 3;
-        CHAVE_ALEATORIA = 4;
-    }
-
-    enum AccountType {
-        UNKNOWN_ACCOUNT = 0;
-        CONTA_CORRENTE = 1;
-        CONTA_POUPANCA = 2;
-    }
 
     string clientId = 1;
     KeyType keyType = 2;

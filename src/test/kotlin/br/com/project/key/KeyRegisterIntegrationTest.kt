@@ -2,6 +2,7 @@ package br.com.project.key
 
 import br.com.project.KeyRequest
 import br.com.project.KeyResponse
+import br.com.project.KeyType
 import br.com.project.PixKeyManagerGrpc
 import br.com.project.account.AccountType
 import br.com.project.bcb.pix.*
@@ -73,9 +74,9 @@ internal class KeyRegisterIntegrationTest(
             KeyRequest
                 .newBuilder()
                 .setClientId(clientUUID)
-                .setKeyType(KeyRequest.KeyType.CPF)
+                .setKeyType(KeyType.CPF)
                 .setKeyValue(key)
-                .setAccountType(KeyRequest.AccountType.CONTA_CORRENTE)
+                .setAccountType(br.com.project.AccountType.CONTA_CORRENTE)
                 .build()
         )
         Assertions.assertEquals(response.clientId, clientUUID)
@@ -112,9 +113,9 @@ internal class KeyRegisterIntegrationTest(
             KeyRequest
                 .newBuilder()
                 .setClientId(clientUUID)
-                .setKeyType(KeyRequest.KeyType.NUMERO_CELULAR)
+                .setKeyType(KeyType.NUMERO_CELULAR)
                 .setKeyValue(key)
-                .setAccountType(KeyRequest.AccountType.CONTA_POUPANCA)
+                .setAccountType(br.com.project.AccountType.CONTA_POUPANCA)
                 .build()
         )
         Assertions.assertEquals(response.clientId, clientUUID)
@@ -151,9 +152,9 @@ internal class KeyRegisterIntegrationTest(
             KeyRequest
                 .newBuilder()
                 .setClientId(clientUUID)
-                .setKeyType(KeyRequest.KeyType.EMAIL)
+                .setKeyType(KeyType.EMAIL)
                 .setKeyValue(key)
-                .setAccountType(KeyRequest.AccountType.CONTA_CORRENTE)
+                .setAccountType(br.com.project.AccountType.CONTA_CORRENTE)
                 .build()
         )
         Assertions.assertEquals(response.clientId, clientUUID)
@@ -190,9 +191,9 @@ internal class KeyRegisterIntegrationTest(
             KeyRequest
                 .newBuilder()
                 .setClientId(clientUUID)
-                .setKeyType(KeyRequest.KeyType.CHAVE_ALEATORIA)
+                .setKeyType(KeyType.CHAVE_ALEATORIA)
                 .setKeyValue(key)
-                .setAccountType(KeyRequest.AccountType.CONTA_CORRENTE)
+                .setAccountType(br.com.project.AccountType.CONTA_CORRENTE)
                 .build()
         )
         Assertions.assertEquals(response.clientId, clientUUID)
@@ -230,9 +231,9 @@ internal class KeyRegisterIntegrationTest(
                 KeyRequest
                     .newBuilder()
                     .setClientId(clientUUID)
-                    .setKeyType(KeyRequest.KeyType.EMAIL)
+                    .setKeyType(KeyType.EMAIL)
                     .setKeyValue(key)
-                    .setAccountType(KeyRequest.AccountType.CONTA_CORRENTE)
+                    .setAccountType(br.com.project.AccountType.CONTA_CORRENTE)
                     .build()
             )
         }
@@ -252,9 +253,9 @@ internal class KeyRegisterIntegrationTest(
                 KeyRequest
                     .newBuilder()
                     .setClientId("")
-                    .setKeyType(KeyRequest.KeyType.EMAIL)
+                    .setKeyType(KeyType.EMAIL)
                     .setKeyValue("email@email.com")
-                    .setAccountType(KeyRequest.AccountType.CONTA_CORRENTE)
+                    .setAccountType(br.com.project.AccountType.CONTA_CORRENTE)
                     .build()
             )
         }
@@ -272,9 +273,9 @@ internal class KeyRegisterIntegrationTest(
                 KeyRequest
                     .newBuilder()
                     .setClientId("c56dfef4-7901-44fb-84e2-a2cefb157890")
-                    .setKeyType(KeyRequest.KeyType.UNKNOWN_TYPE)
+                    .setKeyType(KeyType.UNKNOWN_TYPE)
                     .setKeyValue("email@email.com")
-                    .setAccountType(KeyRequest.AccountType.CONTA_CORRENTE)
+                    .setAccountType(br.com.project.AccountType.CONTA_CORRENTE)
                     .build()
             )
         }
@@ -289,9 +290,9 @@ internal class KeyRegisterIntegrationTest(
                 KeyRequest
                     .newBuilder()
                     .setClientId("c56dfef4-7901-44fb-84e2-a2cefb157890")
-                    .setKeyType(KeyRequest.KeyType.EMAIL)
+                    .setKeyType(KeyType.EMAIL)
                     .setKeyValue("email@email.com")
-                    .setAccountType(KeyRequest.AccountType.UNKNOWN_ACCOUNT)
+                    .setAccountType(br.com.project.AccountType.UNKNOWN_ACCOUNT)
                     .build()
             )
         }
@@ -306,9 +307,9 @@ internal class KeyRegisterIntegrationTest(
                 KeyRequest
                     .newBuilder()
                     .setClientId("c56dfef4-7901-44fb-84e2-a2cefb157890")
-                    .setKeyType(KeyRequest.KeyType.CPF)
+                    .setKeyType(KeyType.CPF)
                     .setKeyValue("email@email.com")
-                    .setAccountType(KeyRequest.AccountType.CONTA_CORRENTE)
+                    .setAccountType(br.com.project.AccountType.CONTA_CORRENTE)
                     .build()
             )
         }
@@ -323,9 +324,9 @@ internal class KeyRegisterIntegrationTest(
                 KeyRequest
                     .newBuilder()
                     .setClientId("c56dfef4-7901-44fb-84e2-a2cefb157890")
-                    .setKeyType(KeyRequest.KeyType.CPF)
+                    .setKeyType(KeyType.CPF)
                     .setKeyValue("11111111111")
-                    .setAccountType(KeyRequest.AccountType.CONTA_CORRENTE)
+                    .setAccountType(br.com.project.AccountType.CONTA_CORRENTE)
                     .build()
             )
         }
@@ -340,9 +341,9 @@ internal class KeyRegisterIntegrationTest(
                 KeyRequest
                     .newBuilder()
                     .setClientId("c56dfef4-7901-44fb-84e2-a2cefb157890")
-                    .setKeyType(KeyRequest.KeyType.NUMERO_CELULAR)
+                    .setKeyType(KeyType.NUMERO_CELULAR)
                     .setKeyValue("23436765")
-                    .setAccountType(KeyRequest.AccountType.CONTA_CORRENTE)
+                    .setAccountType(br.com.project.AccountType.CONTA_CORRENTE)
                     .build()
             )
         }
@@ -357,9 +358,9 @@ internal class KeyRegisterIntegrationTest(
                 KeyRequest
                     .newBuilder()
                     .setClientId("c56dfef4-7901-44fb-84e2-a2cefb157890")
-                    .setKeyType(KeyRequest.KeyType.EMAIL)
+                    .setKeyType(KeyType.EMAIL)
                     .setKeyValue("@")
-                    .setAccountType(KeyRequest.AccountType.CONTA_CORRENTE)
+                    .setAccountType(br.com.project.AccountType.CONTA_CORRENTE)
                     .build()
             )
         }
@@ -374,9 +375,9 @@ internal class KeyRegisterIntegrationTest(
                 KeyRequest
                     .newBuilder()
                     .setClientId("c56dfef4-7901-44fb-84e2-a2cefb157890")
-                    .setKeyType(KeyRequest.KeyType.CHAVE_ALEATORIA)
+                    .setKeyType(KeyType.CHAVE_ALEATORIA)
                     .setKeyValue("3364redgf67ufj")
-                    .setAccountType(KeyRequest.AccountType.CONTA_CORRENTE)
+                    .setAccountType(br.com.project.AccountType.CONTA_CORRENTE)
                     .build()
             )
         }
@@ -394,9 +395,9 @@ internal class KeyRegisterIntegrationTest(
                 KeyRequest
                     .newBuilder()
                     .setClientId("c56dfef4-7901-44fb-84e2-a2cefb157822")
-                    .setKeyType(KeyRequest.KeyType.CHAVE_ALEATORIA)
+                    .setKeyType(KeyType.CHAVE_ALEATORIA)
                     .setKeyValue("")
-                    .setAccountType(KeyRequest.AccountType.CONTA_CORRENTE)
+                    .setAccountType(br.com.project.AccountType.CONTA_CORRENTE)
                     .build()
             )
         }
@@ -430,9 +431,9 @@ internal class KeyRegisterIntegrationTest(
                 KeyRequest
                     .newBuilder()
                     .setClientId("c56dfef4-7901-44fb-84e2-a2cefb157822")
-                    .setKeyType(KeyRequest.KeyType.CHAVE_ALEATORIA)
+                    .setKeyType(KeyType.CHAVE_ALEATORIA)
                     .setKeyValue(key)
-                    .setAccountType(KeyRequest.AccountType.CONTA_CORRENTE)
+                    .setAccountType(br.com.project.AccountType.CONTA_CORRENTE)
                     .build()
             )
         }
@@ -466,9 +467,9 @@ internal class KeyRegisterIntegrationTest(
                 KeyRequest
                     .newBuilder()
                     .setClientId("c56dfef4-7901-44fb-84e2-a2cefb157822")
-                    .setKeyType(KeyRequest.KeyType.CHAVE_ALEATORIA)
+                    .setKeyType(KeyType.CHAVE_ALEATORIA)
                     .setKeyValue(key)
-                    .setAccountType(KeyRequest.AccountType.CONTA_CORRENTE)
+                    .setAccountType(br.com.project.AccountType.CONTA_CORRENTE)
                     .build()
             )
         }
@@ -486,9 +487,9 @@ internal class KeyRegisterIntegrationTest(
                 KeyRequest
                     .newBuilder()
                     .setClientId("c56dfef4-7901-44fb-84e2-a2cefb157811")
-                    .setKeyType(KeyRequest.KeyType.CHAVE_ALEATORIA)
+                    .setKeyType(KeyType.CHAVE_ALEATORIA)
                     .setKeyValue("")
-                    .setAccountType(KeyRequest.AccountType.CONTA_CORRENTE)
+                    .setAccountType(br.com.project.AccountType.CONTA_CORRENTE)
                     .build()
             )
         }

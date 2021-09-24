@@ -5,6 +5,7 @@ import br.com.project.bcb.pix.BCBPix
 import br.com.project.bcb.pix.DeletePixKeyRequest
 import io.grpc.Status
 import io.micronaut.http.HttpStatus
+import java.time.Instant
 import java.util.*
 import javax.persistence.*
 import javax.validation.constraints.NotNull
@@ -46,6 +47,25 @@ class Key private constructor(builder: Builder){
             return KeyResponseData( key = key.get() )
         }
 
+        fun searchByClientIdAndPixId(keyRepository: KeyRepository, clientId: String, pixId: String): KeyResponseData {
+            val key = keyRepository.findByIdAndClientId(UUID.fromString(pixId), clientId)
+            if( key.isEmpty )
+                return KeyResponseData(
+                    error = Status
+                        .NOT_FOUND
+                        .withDescription("Pix key with id { $pixId } not found.")
+                        .asRuntimeException()
+                )
+            return KeyResponseData( key = key.get() )
+        }
+
+        fun searchByKeyOrElse(key: String, keyRepository: KeyRepository, otherwise: () -> KeyResponseData ): KeyResponseData {
+            val keyOptional = keyRepository.findByKeyValue( key )
+            if( keyOptional.isPresent )
+                return KeyResponseData( key = keyOptional.get() )
+            return otherwise()
+        }
+
     }
 
     @field:Id
@@ -56,18 +76,24 @@ class Key private constructor(builder: Builder){
     val clientId : String
 
     @field:NotNull
-    private val clientName : String
+    val clientName : String
+
+    @field:NotNull
+    val cpf : String
 
     @field:NotNull
     @field:Enumerated( EnumType.STRING )
-    private val keyType : KeyType
+    val keyType : KeyType
 
     @field:NotNull
     val keyValue : String
 
     @field:NotNull
     @field:ManyToOne( cascade = [CascadeType.MERGE] )
-    private val account : Account
+    val account : Account
+
+    @field:NotNull
+    val createdAt : Instant
 
     init{
         clientId = builder.clientId
@@ -75,6 +101,8 @@ class Key private constructor(builder: Builder){
         keyType = builder.keyType
         keyValue = builder.keyValue
         account = builder.account
+        cpf = builder.cpf
+        createdAt = builder.createdAt ?: Instant.now()
     }
 
     fun register( keyRepository: KeyRepository) : Key {
@@ -88,9 +116,16 @@ class Key private constructor(builder: Builder){
         lateinit var keyType : KeyType
         lateinit var keyValue : String
         lateinit var account : Account
+        lateinit var cpf : String
+        var createdAt : Instant? = null
 
         fun withClientId( clientId : String ) : Builder {
             this.clientId = clientId
+            return this
+        }
+
+        fun withCpf( cpf : String ) : Builder {
+            this.cpf = cpf
             return this
         }
 
@@ -111,6 +146,11 @@ class Key private constructor(builder: Builder){
 
         fun withAccount( account : Account ) : Builder {
             this.account = account
+            return this
+        }
+
+        fun withCreationDate( instant: Instant ) : Builder {
+            this.createdAt = instant
             return this
         }
 

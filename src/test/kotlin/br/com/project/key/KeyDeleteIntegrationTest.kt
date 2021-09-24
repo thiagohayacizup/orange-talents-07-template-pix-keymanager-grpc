@@ -2,6 +2,7 @@ package br.com.project.key
 
 import br.com.project.KeyDeleteRequest
 import br.com.project.KeyRequest
+import br.com.project.KeyType
 import br.com.project.PixKeyManagerGrpc
 import br.com.project.account.AccountType
 import br.com.project.bcb.pix.*
@@ -71,9 +72,9 @@ internal class KeyDeleteIntegrationTest(
             KeyRequest
                 .newBuilder()
                 .setClientId( clientId )
-                .setKeyType(KeyRequest.KeyType.EMAIL)
+                .setKeyType(KeyType.EMAIL)
                 .setKeyValue(key)
-                .setAccountType(KeyRequest.AccountType.CONTA_CORRENTE)
+                .setAccountType(br.com.project.AccountType.CONTA_CORRENTE)
                 .build()
         )
         val responseDelete = keyManagerGrpcClient.deleteKey(
@@ -118,9 +119,9 @@ internal class KeyDeleteIntegrationTest(
             KeyRequest
                 .newBuilder()
                 .setClientId( clientId )
-                .setKeyType(KeyRequest.KeyType.EMAIL)
+                .setKeyType(KeyType.EMAIL)
                 .setKeyValue(key)
-                .setAccountType(KeyRequest.AccountType.CONTA_CORRENTE)
+                .setAccountType(br.com.project.AccountType.CONTA_CORRENTE)
                 .build()
         )
         val thrown = assertThrows<StatusRuntimeException>{

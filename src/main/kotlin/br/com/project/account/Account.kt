@@ -17,20 +17,20 @@ class Account private constructor(builder: Builder) {
     val id : Long? = null
 
     @field:NotNull
-    private val bankName : String
+    val bankName : String
 
     @field:NotNull
-    private val agency : String
+    val agency : String
 
     @field:NotNull
-    private val accountNumber : String
+    val accountNumber : String
 
     @field:NotNull
     val ispb : String
 
     @field:NotNull
     @field:Enumerated( EnumType.STRING )
-    private val accountType: AccountType
+    val accountType: AccountType
 
     init {
         bankName = builder.bankName

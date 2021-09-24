@@ -38,6 +38,7 @@ data class KeyTransferObject(
     fun register(keyRepository : KeyRepository, accountRepository: AccountRepository, accountInfo : AccountInfo ) : Key {
         return builder
             .withClientId( clientId )
+            .withCpf( accountInfo.titular.cpf )
             .withClientName( accountInfo.titular.nome )
             .withKeyType( keyType!! )
             .withAccount(

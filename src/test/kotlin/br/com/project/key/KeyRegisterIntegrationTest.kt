@@ -39,10 +39,10 @@ internal class KeyRegisterIntegrationTest(
     @Inject lateinit var bcbPix : BCBPix
 
     companion object{
-        val UUID_REGEX = "^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}\$".toRegex()
-        val ISPB = "60701190"
-        val AGENCY = "00001"
-        val CPF = "47457722033"
+        private val UUID_REGEX = "^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}\$".toRegex()
+        private const val ISPB = "60701190"
+        private const val AGENCY = "00001"
+        private const val CPF = "47457722033"
     }
 
     @Test

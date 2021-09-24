@@ -33,12 +33,12 @@ internal class KeyDeleteIntegrationTest(
     @Inject lateinit var bcbPix : BCBPix
 
     companion object{
-        val ispb = "60701190"
-        val key = "nome@email.com"
-        val agency = "00001"
-        val accountNumber = "67355756"
-        val cpf = "95274473059"
-        val name = "Silva"
+        private const val ispb = "60701190"
+        private const val key = "nome@email.com"
+        private const val agency = "00001"
+        private const val accountNumber = "67355756"
+        private const val cpf = "95274473059"
+        private const val name = "Silva"
     }
 
     @Test

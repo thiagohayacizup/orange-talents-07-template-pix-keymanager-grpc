@@ -265,6 +265,15 @@ internal class LoadIntegrationTest(
     }
 
     @Test
+    fun `invalid key`(){
+        val thrown = assertThrows<StatusRuntimeException>{
+            pixKeyLoadManagerGrpc.loadInfo( LoadRequest.newBuilder().setKey("").build() )
+        }
+        Assertions.assertEquals(thrown.status.code.value(), Status.INVALID_ARGUMENT.code.value())
+        Assertions.assertEquals(thrown.message, "INVALID_ARGUMENT: Key cannot be blank or null.")
+    }
+
+    @Test
     fun `load passing no request`(){
         val thrown = assertThrows<StatusRuntimeException>{
             pixKeyLoadManagerGrpc.loadInfo( LoadRequest.newBuilder().build() )

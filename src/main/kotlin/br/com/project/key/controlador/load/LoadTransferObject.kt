@@ -8,11 +8,10 @@ import br.com.project.key.model.KeyRepository
 import br.com.project.key.model.KeyResponseData
 import br.com.project.key.validator.UUIDValid
 import io.grpc.Status
+import io.micronaut.core.annotation.Introspected
 import io.micronaut.http.HttpStatus
-import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
-import java.util.*
 import javax.validation.constraints.NotBlank
 import javax.validation.constraints.Size
 
@@ -22,13 +21,14 @@ interface LoadTransferObject {
 
 }
 
+@Introspected
 data class LoadTransferObjectPixId(
     @field:UUIDValid
     @field:NotBlank( message = "ClientId cannot be blank or null." )
-    private val clientId : String,
+    val clientId : String,
     @field:UUIDValid
     @field:NotBlank( message = "PixId cannot be blank or null." )
-    private val pixId : String
+    val pixId : String
 ) : LoadTransferObject{
 
     override fun load( keyRepository: KeyRepository, bcbPix: BCBPix ) : KeyResponseData {
@@ -37,10 +37,11 @@ data class LoadTransferObjectPixId(
 
 }
 
+@Introspected
 data class LoadTransferObjectKey(
     @field:NotBlank( message = "Key cannot be blank or null." )
     @field:Size( max = 77, message = "Key size must have size max 77 characters")
-    private val key : String
+    val key : String
 ) : LoadTransferObject {
 
     override fun load( keyRepository: KeyRepository, bcbPix: BCBPix ) : KeyResponseData {

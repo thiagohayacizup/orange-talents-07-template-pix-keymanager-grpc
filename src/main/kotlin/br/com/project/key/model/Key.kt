@@ -66,6 +66,10 @@ class Key private constructor(builder: Builder){
             return otherwise()
         }
 
+        fun listAllKeyByClientId(clientId: String, keyRepository: KeyRepository): List<Key> {
+            return keyRepository.findByClientId(clientId)
+        }
+
     }
 
     @field:Id

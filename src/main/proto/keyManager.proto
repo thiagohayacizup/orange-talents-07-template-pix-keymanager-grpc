@@ -21,6 +21,8 @@ service PixKeyLoadManager {
 
     rpc loadInfo( LoadRequest ) returns ( LoadResponse ) {}
 
+    rpc listKeysByClient( ListKeysClientRequest ) returns ( ListKeysClientResponse ) {}
+
 }
 
 enum KeyType {
@@ -35,6 +37,27 @@ enum AccountType {
     UNKNOWN_ACCOUNT = 0;
     CONTA_CORRENTE = 1;
     CONTA_POUPANCA = 2;
+}
+
+message ListKeysClientRequest{
+    string clientId = 1;
+}
+
+message ListKeysClientResponse{
+
+    message PixKey {
+
+        string pixId = 1;
+        KeyType keyType = 2;
+        string keyValue = 3;
+        AccountType accountType = 4;
+        google.protobuf.Timestamp createdAt = 5;
+
+    }
+
+    string clientId = 1;
+    repeated PixKey pixKey = 2;
+
 }
 
 message LoadResponse{

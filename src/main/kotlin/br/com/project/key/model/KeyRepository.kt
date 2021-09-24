@@ -11,4 +11,6 @@ interface KeyRepository : JpaRepository<Key, UUID> {
 
     fun findByIdAndClientId( id : UUID, clientId : String ) : Optional<Key>
 
+    fun findByClientId( clientId: String ) : List<Key>
+
 }

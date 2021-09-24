@@ -12,6 +12,6 @@ data class PixKeyDetailsResponse(
     val keyType : KeyTypeBCB,
     val key : String,
     val bankAccount: BankAccount,
-    val ownerBCB: OwnerBCB,
+    val owner: OwnerBCB,
     val createdAt : String
 )

@@ -2,6 +2,7 @@ package br.com.project.key.controlador.load
 
 import br.com.project.account.Account
 import br.com.project.bcb.pix.BCBPix
+import br.com.project.institution.Institution
 import br.com.project.key.model.Key
 import br.com.project.key.model.KeyRepository
 import br.com.project.key.model.KeyResponseData
@@ -9,7 +10,11 @@ import br.com.project.key.validator.UUIDValid
 import io.grpc.Status
 import io.micronaut.http.HttpStatus
 import java.time.Instant
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.util.*
 import javax.validation.constraints.NotBlank
+import javax.validation.constraints.Size
 
 interface LoadTransferObject {
 
@@ -34,6 +39,7 @@ data class LoadTransferObjectPixId(
 
 data class LoadTransferObjectKey(
     @field:NotBlank( message = "Key cannot be blank or null." )
+    @field:Size( max = 77, message = "Key size must have size max 77 characters")
     private val key : String
 ) : LoadTransferObject {
 
@@ -51,13 +57,18 @@ data class LoadTransferObjectKey(
             return@searchByKeyOrElse KeyResponseData(
                 key = Key.builder()
                     .withClientId("")
-                    .withCpf(body.ownerBCB.taxIdNumber)
-                    .withCreationDate(Instant.parse(body.createdAt))
+                    .withCpf(body.owner.taxIdNumber)
+                    .withCreationDate(LocalDateTime
+                        .parse(body.createdAt)
+                        .atZone(ZoneId.of("America/Sao_Paulo"))
+                        .toInstant()
+                    )
                     .withKeyType( body.keyType.toKeyType() )
-                    .withClientName( body.ownerBCB.name )
+                    .withClientName( body.owner.name )
                     .withKeyValue( body.key )
                     .withAccount(
                         Account.builder()
+                            .withBankName(Institution.name(body.bankAccount.participant) )
                             .withIspb( body.bankAccount.participant )
                             .withAgency( body.bankAccount.branch )
                             .withAccountNumber( body.bankAccount.accountNumber )

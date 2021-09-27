@@ -28,8 +28,8 @@ jpa:
 
 itau:
   contas:
-    url: 'http://localhost:9091'
+    url: ${ITAU_URL:`http://localhost:9091`}
 
 bcb:
   pix:
-    url: 'http://localhost:8082'
+    url: ${PIX_URL:`http://localhost:8082`}
